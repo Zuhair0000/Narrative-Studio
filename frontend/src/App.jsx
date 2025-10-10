@@ -6,6 +6,7 @@ import SignUp from "./pages/Signup";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import StoriesPage from "./pages/StoriesPage";
+import CreateStory from "./pages/CreateStory";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/stories/:id" element={<StoriesPage />} />
+        <Route path="/create-story" element={<CreateStory />} />
       </Routes>
     </>
   );

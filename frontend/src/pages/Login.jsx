@@ -8,11 +8,11 @@ export default function Login() {
   };
 
   return (
-    <GradientBackground>
+    <div className="bg-[#1F2028] min-h-screen">
       <Navbar showAuthButtons={false} />
-      <div className="flex justify-center items-center min-h-screen px-4">
+      <div className="flex justify-center items-center px-4 mt-20">
         <AuthForm type="login" onSubmit={handleLogin} />
       </div>
-    </GradientBackground>
+    </div>
   );
 }

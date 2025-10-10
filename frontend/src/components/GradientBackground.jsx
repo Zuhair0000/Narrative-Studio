@@ -3,7 +3,7 @@ export default function GradientBackground({ children }) {
     <div
       className="min-h-screen relative overflow-hidden"
       style={{
-        backgroundColor: "#0F0F0F", // dark background
+        backgroundColor: "#1F2028", // dark background
       }}
     >
       {/* Gradient glow at the bottom */}

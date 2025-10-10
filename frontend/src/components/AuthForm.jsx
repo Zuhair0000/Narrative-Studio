@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Navbar from "./Navbar";
+import Button from "./Button";
 
 export default function AuthForm({ type, onSubmit }) {
   const [formData, setFormData] = useState({
@@ -21,8 +22,8 @@ export default function AuthForm({ type, onSubmit }) {
 
   return (
     <>
-      <div className="w-full max-w-md mx-auto bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-lg text-white border border-white/10">
-        <h2 className="text-2xl font-semibold text-center mb-6">
+      <div className="w-full max-w-md mx-auto bg-[#1F2028] backdrop-blur-lg rounded-2xl p-8 shadow-lg text-white border border-white/10">
+        <h2 className="text-4xl font-semibold text-center mb-6 text-orange-500">
           {isSignUp ? "Create Account" : "Welcome Back"}
         </h2>
 
@@ -64,13 +65,9 @@ export default function AuthForm({ type, onSubmit }) {
               className="w-full px-4 py-2 rounded-md bg-white/5 border border-white/20 focus:outline-none focus:ring-2 focus:ring-pink-500"
             />
           </div>
-
-          <button
-            type="submit"
-            className="w-full py-2 rounded-md bg-gradient-to-r from-pink-500 to-purple-500 font-semibold hover:opacity-90 transition"
-          >
-            {isSignUp ? "Sign Up" : "Log In"}
-          </button>
+          <div className="flex justify-center">
+            <Button>{isSignUp ? "Sign Up" : "Log In"}</Button>
+          </div>
         </form>
 
         <p className="text-sm text-center mt-4">
