@@ -1,10 +1,27 @@
 import GradientBackground from "../components/GradientBackground";
 import AuthForm from "../components/AuthForm";
 import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const handleLogin = (data) => {
-    console.log("Login Data:", data);
+  const navigate = useNavigate();
+  const handleLogin = async (formData) => {
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Login failed");
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", data.user);
+      navigate("/dashboard");
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
   return (
