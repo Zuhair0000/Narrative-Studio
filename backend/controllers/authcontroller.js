@@ -26,7 +26,7 @@ exports.signup = async (req, res) => {
 
     res
       .status(201)
-      .json({ message: "Registered successfully", id: user.insertid });
+      .json({ message: "Registered successfully", id: user.insertId });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error", error: err.message });
@@ -49,7 +49,7 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: "User does not exist" });
     }
 
-    const user = user[0];
+    const user = users[0];
 
     const isMatched = await bcrypt.compare(password, user.password);
 

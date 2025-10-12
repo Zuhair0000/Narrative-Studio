@@ -6,9 +6,9 @@ import { useNavigate } from "react-router-dom";
 export default function SignUp() {
   const navigate = useNavigate();
 
-  const handleSignUp = async (formData) => {
+  const handleSignUp = async (formData, setFormData) => {
     try {
-      const res = await fetch("http://localhost:5000/api/auth/signup", {
+      const res = await fetch("http://localhost:3001/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -19,6 +19,11 @@ export default function SignUp() {
       if (!res.ok) {
         throw new Error(data.error || "Sign up failed");
       }
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+      });
       navigate("/login");
     } catch (err) {
       alert(err.message);

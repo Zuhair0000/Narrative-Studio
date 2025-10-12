@@ -15,7 +15,7 @@ export default function AuthForm({ type, onSubmit }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit(formData, setFormData);
   };
 
   const isSignUp = type === "signup";
@@ -66,7 +66,9 @@ export default function AuthForm({ type, onSubmit }) {
             />
           </div>
           <div className="flex justify-center">
-            <Button>{isSignUp ? "Sign Up" : "Log In"}</Button>
+            <Button onSubmit={handleSubmit}>
+              {isSignUp ? "Sign Up" : "Log In"}
+            </Button>
           </div>
         </form>
 
