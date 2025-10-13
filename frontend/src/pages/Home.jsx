@@ -1,6 +1,5 @@
 import Navbar from "../components/Navbar";
 import GradientBackground from "../components/GradientBackground";
-import { Link } from "react-router-dom";
 import Button from "../components/Button";
 
 export default function Home() {

@@ -1,4 +1,3 @@
-import GradientBackground from "../components/GradientBackground";
 import AuthForm from "../components/AuthForm";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Navbar from "./Navbar";
 import Button from "./Button";
 
 export default function AuthForm({ type, onSubmit }) {
