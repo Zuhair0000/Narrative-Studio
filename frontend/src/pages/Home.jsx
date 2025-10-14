@@ -4,7 +4,7 @@ import Button from "../components/Button";
 
 export default function Home() {
   return (
-    <GradientBackground>
+    <div className="min-h-screen bg-[#1F2028]">
       <Navbar />
       <div className="flex flex-col items-center justify-center min-h-[80vh] text-center">
         <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-[#F3911D] to-[#840B86] text-transparent bg-clip-text pb-10">
@@ -17,6 +17,7 @@ export default function Home() {
         </p>
         <Button>Get Started</Button>
       </div>
-    </GradientBackground>
+      <div className="absolute top-[calc(80vh)] left-0 w-full h-[calc(100vh-80vh)] bg-gradient-to-r from-orange-500 to-pink-600 rounded-t-[100px] z-0"></div>
+    </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useEffect, useState } from "react";
+import Button from "../components/Button";
 
 export default function Dashboard() {
   const [drafts, setDrafts] = useState([]);
@@ -28,25 +29,37 @@ export default function Dashboard() {
   return (
     <>
       <Navbar showAuthButtons={false} />
-      <div className="min-h-screen bg-[#1F2028] text-white flex flex-col items-center py-20 px-6">
+      <div className="min-h-screen bg-[#1F2028] text-white flex flex-col items-center py-40 px-6">
         {/* Header */}
         <h1 className="text-4xl font-bold text-orange-500 mb-3">
           Your Brand Stories
         </h1>
-        <p className="text-gray-400 mb-6 text-center">
+        <p className="text-gray-400 mb-30 text-center">
           Create compelling narratives that connect with your audience
         </p>
 
-        <button
-          className="bg-gradient-to-r from-orange-500 to-pink-600 px-5 py-2 rounded-md font-medium shadow-lg hover:opacity-90 transition"
-          onClick={() => navigate("/create-story")}
-        >
+        <Button onSubmit={() => navigate("/create-story")}>
           Create New Story
-        </button>
+        </Button>
 
         {/* Gradient Divider */}
-        <div className="relative w-full my-16">
-          <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-orange-500 to-pink-600 rounded-t-[100px]"></div>
+        <div className="relative w-[calc(100%+3rem)] -mx-6 my-2 h-64 overflow-hidden">
+          <svg
+            className="w-full h-full"
+            viewBox="0 0 1440 320"
+            preserveAspectRatio="none"
+          >
+            <path
+              fill="url(#gradient)"
+              d="M0,0 C360,160 1080,160 1440,0 L1440,320 L0,320 Z"
+            ></path>
+            <defs>
+              <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#F3911D" />
+                <stop offset="100%" stopColor="#840B86" />
+              </linearGradient>
+            </defs>
+          </svg>
         </div>
 
         {/* Previous Drafts */}
