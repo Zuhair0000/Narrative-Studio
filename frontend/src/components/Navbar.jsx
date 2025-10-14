@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import Button from "./Button";
+import Logo from "../assets/navbarLogo.jpg";
 
 export default function Navbar({ showAuthButtons = true }) {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ export default function Navbar({ showAuthButtons = true }) {
         to={token ? "/dashboard" : "/"}
         className="text-lg font-semibold flex justify-center items-center"
       >
-        <img src="../../public/navbarLogo.jpg" className="w-10 mr-3" />
+        <img src={Logo} className="w-10 mr-3" />
         Narrative Studio
       </Link>
       {showAuthButtons && (
