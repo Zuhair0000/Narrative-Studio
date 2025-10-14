@@ -47,18 +47,18 @@ export default function CreateStory() {
   return (
     <>
       <Navbar showAuthButtons={false} />
-      <div className="min-h-screen bg-[#1F2028] text-white flex flex-col items-center py-20 px-6">
-        <form className="bg-[#qF2028] shadow-2xl rounded-2xl p-10">
+      <div className="min-h-screen bg-[#1F2028] text-white flex flex-col items-center">
+        {/* Form */}
+        <form className="bg-[#1F2028] shadow-2xl rounded-2xl p-10 mt-20 w-full max-w-3xl z-10 relative">
           <h1 className="text-2xl text-center text-orange-500 font-bold mb-3">
             Create Story
           </h1>
           <p className="text-gray-400 text-sm mb-5 text-center">
-            Share Your company details and let AI craft compelling narratives{" "}
-            <br />
+            Share your company details and let AI craft compelling narratives
             that resonate with your audience
           </p>
 
-          <div className="space-y-5 mb-5 flex flex-col items-center">
+          <div className="space-y-5 flex flex-col items-center w-full">
             <div>
               <label className="text-sm text-gray-400 block mb-1">
                 Company Name
@@ -128,6 +128,9 @@ export default function CreateStory() {
             <Button onSubmit={handleSubmit}>Create Story</Button>
           </div>
         </form>
+
+        {/* Gradient Section */}
+        <div className="flex-1 w-full bg-gradient-to-r from-[#F3911D] to-[#840B86] rounded-t-[100px] mt-10"></div>
       </div>
     </>
   );

@@ -1,8 +1,10 @@
 import Navbar from "../components/Navbar";
 import GradientBackground from "../components/GradientBackground";
 import Button from "../components/Button";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-[#1F2028]">
       <Navbar />
@@ -15,7 +17,7 @@ export default function Home() {
           resonate with your audience. Powered by advanced AI to craft
           narratives that inspire and convert.
         </p>
-        <Button>Get Started</Button>
+        <Button onSubmit={() => navigate("/signup")}>Get Started</Button>
       </div>
       <div className="absolute top-[calc(80vh)] left-0 w-full h-[calc(100vh-80vh)] bg-gradient-to-r from-orange-500 to-pink-600 rounded-t-[100px] z-0"></div>
     </div>

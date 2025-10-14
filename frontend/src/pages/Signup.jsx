@@ -35,6 +35,7 @@ export default function SignUp() {
       <div className="flex justify-center items-center px-4 mt-20">
         <AuthForm type="signup" onSubmit={handleSignUp} />
       </div>
+      <div className="absolute top-[calc(80vh)] left-0 w-full h-[calc(100vh-80vh)] bg-gradient-to-r from-orange-500 to-pink-600 rounded-t-[100px] z-0"></div>
     </div>
   );
 }
