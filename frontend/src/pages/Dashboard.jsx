@@ -1,43 +1,58 @@
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { useEffect, useState } from "react";
 
-const drafts = [
-  {
-    id: 1,
-    title: "Title",
-    date: "10/8/2025",
-    category: "Professional",
-    preview:
-      "Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example",
-  },
-  {
-    id: 1,
-    title: "Title",
-    date: "10/8/2025",
-    category: "Professional",
-    preview:
-      "Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example",
-  },
-  {
-    id: 1,
-    title: "Title",
-    date: "10/8/2025",
-    category: "Professional",
-    preview:
-      "Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example",
-  },
-  {
-    id: 1,
-    title: "Title",
-    date: "10/8/2025",
-    category: "Professional",
-    preview:
-      "Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example",
-  },
-];
+// const drafts = [
+//   {
+//     id: 1,
+//     title: "Title",
+//     date: "10/8/2025",
+//     category: "Professional",
+//     preview:
+//       "Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example",
+//   },
+//   {
+//     id: 1,
+//     title: "Title",
+//     date: "10/8/2025",
+//     category: "Professional",
+//     preview:
+//       "Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example",
+//   },
+//   {
+//     id: 1,
+//     title: "Title",
+//     date: "10/8/2025",
+//     category: "Professional",
+//     preview:
+//       "Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example",
+//   },
+//   {
+//     id: 1,
+//     title: "Title",
+//     date: "10/8/2025",
+//     category: "Professional",
+//     preview:
+//       "Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example Example",
+//   },
+// ];
 
 export default function Dashboard() {
+  const [drafts, setDrafts] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchDrafts = async () => {
+      try {
+        const res = await fetch("http://localhost:3001/api/stories");
+        const data = await res.json();
+        setDrafts(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchDrafts();
+  }, []);
 
   return (
     <>

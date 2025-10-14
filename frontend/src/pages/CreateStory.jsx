@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Button from "../components/Button";
 import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateStory() {
   const [formData, setFormData] = useState({
@@ -10,10 +11,34 @@ export default function CreateStory() {
     storyTone: "",
     coreValues: "",
   });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("http://localhost:3001/api/stories/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      console.log("Generated stories:", data);
+
+      if (res.ok) {
+        alert("Stories generated successfully!");
+        navigate(`/stories/${data.storyId}`);
+      } else {
+        alert(data.message || "Failed to generate stories");
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
   return (
     <>
@@ -96,7 +121,7 @@ export default function CreateStory() {
                 className="w-100 bg-gray-800 border border-gray-700 rounded-2xl p-2 text-s, focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
-            <Button>Create Story</Button>
+            <Button onSubmit={handleSubmit}>Create Story</Button>
           </div>
         </form>
       </div>
