@@ -12,7 +12,11 @@ export default function Navbar({ showAuthButtons = true }) {
 
   return (
     <nav className="flex justify-between items-center bg-[#1F2028] px-10 py-6 text-white">
-      <Link to={token ? "/dashboard" : "/"} className="text-lg font-semibold">
+      <Link
+        to={token ? "/dashboard" : "/"}
+        className="text-lg font-semibold flex justify-center items-center"
+      >
+        <img src="../../public/navbarLogo.jpg" className="w-10 mr-3" />
         Narrative Studio
       </Link>
       {showAuthButtons && (

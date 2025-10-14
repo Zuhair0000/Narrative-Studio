@@ -51,49 +51,20 @@ exports.generateStories = async (req, res) => {
 
     const result = completion.choices[0].message.content;
 
-    // const rowStories = result
-    //   .split(/\d.\s+/)
-    //   .filter((s) => s.trim() !== "")
-    //   .map((s) => s.trim());
-
     const rowStories = result
       .split(/(?:^|\n)\d+\.\s+/)
       .filter((s) => s.trim() !== "")
       .map((s) => s.trim());
 
-    // const stories = rowStories.map((s, index) => {
-    //   // const titleMatch = s.match(/Story Title:\s*(.*)/i);
-    //   const firstSentence = s.split(/[.!?]/)[0].trim(); // take first sentence as title
-    //   const title =
-    //     firstSentence.length > 50
-    //       ? `${firstSentence.slice(0, 47)}...`
-    //       : firstSentence;
-
-    //   const cleanContent = s
-    //     .replace(/\*\*(.*?)\*\*/g, "($1)") // Replace **bold** → (bold)
-    //     .replace(/\*/g, "");
-
-    //   return {
-    //     // title: titleMatch ? titleMatch[1].trim() : `Story ${index}`,
-    //     title: title || `Story ${index + 1}`,
-    //     content: cleanContent.trim(),
-    //     story_date: new Date(),
-    //     draft_id: draft_id || null,
-    //   };
-    // });
-
     const stories = rowStories.map((s, index) => {
-      // Try to extract tone if it exists (**Funny**, **Emotional**, etc.)
       const toneMatch = s.match(/\*\*(.*?)\*\*/);
       let title = toneMatch ? toneMatch[1].trim() : null;
 
-      // Clean the story content from **tone** or markdown symbols
       let cleanContent = s
-        .replace(/\*\*(.*?)\*\*/g, "") // remove **bold**
-        .replace(/\*/g, "") // remove stray *
+        .replace(/\*\*(.*?)\*\*/g, "")
+        .replace(/\*/g, "")
         .trim();
 
-      // If there’s no tone, use the first sentence or first few words as title
       if (!title) {
         const firstSentence = cleanContent.split(/[.!?]/)[0].trim();
         title =
@@ -122,68 +93,6 @@ exports.generateStories = async (req, res) => {
     res
       .status(500)
       .json({ message: "Failed to generate stories", error: err.message });
-  }
-};
-
-exports.getAllStories = async (req, res) => {
-  try {
-    const [stories] = await db.query(`
-      SELECT id, title, content, story_date 
-      FROM stories
-      ORDER BY story_date DESC
-    `);
-
-    res.json(stories);
-  } catch (err) {
-    res.status(500).json({ message: "Failed to fetch stories" });
-  }
-};
-
-exports.getStoriesByDraft = async (req, res) => {
-  const { draftId } = req.params;
-
-  try {
-    const [stories] = await db.execute(
-      "SELECT * FROM stories WHERE draft_id = ? ORDER BY story_date DESC",
-      [draftId]
-    );
-
-    res.json(stories);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to fetch draft stories" });
-  }
-};
-
-// exports.getStoryById = async (req, res) => {
-//   const { id } = req.params.id;
-
-//   try {
-//     const [story] = await db.query("SELECT * FROM stories WHERE id = ?", [id]);
-//     if (story.length === 0)
-//       return res.status(404).json({ message: "Story not found" });
-
-//     res.json(story);
-//   } catch (err) {
-//     res.status(500).json({ message: "Failed to fetch story" });
-//   }
-// };
-
-exports.getStoryById = async (req, res) => {
-  const { id } = req.params;
-  const userId = req.user.id;
-
-  try {
-    const [rows] = await db.query(
-      "SELECT id, title, content, story_date FROM stories WHERE draft_id = ? AND user_id = ? ORDER BY id ASC",
-      [id, userId]
-    );
-
-    // rows will be an array of story objects
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Error fetching stories" });
   }
 };
 
@@ -217,5 +126,23 @@ exports.getAllDrafts = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to fetch drafts" });
+  }
+};
+
+exports.getStoryByDraftId = async (req, res) => {
+  const { draftId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const [rows] = await db.query(
+      "SELECT id, title, content, story_date FROM stories WHERE draft_id = ? AND user_id = ? ORDER BY id ASC",
+      [draftId, userId]
+    );
+
+    // rows will be an array of story objects
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching stories" });
   }
 };
