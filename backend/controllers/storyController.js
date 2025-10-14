@@ -1,13 +1,19 @@
-const OpenAI = require("openai");
+// const OpenAI = require("openai");
+const Groq = require("groq-sdk");
 const db = require("../db");
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+// const openai = new OpenAI({
+//   apiKey: process.env.OPENAI_API_KEY,
+// });
+
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
 });
 
 exports.generateStories = async (req, res) => {
   const { companyName, companyPitch, targetAudience, storyTone, coreValues } =
     req.body;
+  const userId = req.user.id;
 
   if (
     !companyName ||
@@ -20,7 +26,7 @@ exports.generateStories = async (req, res) => {
   }
 
   const prompt = `
-  Ypu are a creative brand storyteller.
+  You are a creative brand storyteller.
   Generate 3 short, unique brand stories for the following company details:
   - Company Name: ${companyName}
   - Company Pitch: ${companyPitch}
@@ -37,40 +43,80 @@ exports.generateStories = async (req, res) => {
   `;
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const draft_id = Date.now();
+    const completion = await groq.chat.completions.create({
+      model: "openai/gpt-oss-20b",
       messages: [{ role: "user", content: prompt }],
     });
 
     const result = completion.choices[0].message.content;
 
+    // const rowStories = result
+    //   .split(/\d.\s+/)
+    //   .filter((s) => s.trim() !== "")
+    //   .map((s) => s.trim());
+
     const rowStories = result
-      .split(/\d.\s+/)
+      .split(/(?:^|\n)\d+\.\s+/)
       .filter((s) => s.trim() !== "")
       .map((s) => s.trim());
 
+    // const stories = rowStories.map((s, index) => {
+    //   // const titleMatch = s.match(/Story Title:\s*(.*)/i);
+    //   const firstSentence = s.split(/[.!?]/)[0].trim(); // take first sentence as title
+    //   const title =
+    //     firstSentence.length > 50
+    //       ? `${firstSentence.slice(0, 47)}...`
+    //       : firstSentence;
+
+    //   const cleanContent = s
+    //     .replace(/\*\*(.*?)\*\*/g, "($1)") // Replace **bold** → (bold)
+    //     .replace(/\*/g, "");
+
+    //   return {
+    //     // title: titleMatch ? titleMatch[1].trim() : `Story ${index}`,
+    //     title: title || `Story ${index + 1}`,
+    //     content: cleanContent.trim(),
+    //     story_date: new Date(),
+    //     draft_id: draft_id || null,
+    //   };
+    // });
+
     const stories = rowStories.map((s, index) => {
-      const titleMatch = s.match(/Story Title:\s*(.*)/i);
-      const contentMatch = s.match(/Story Content:\s*([\s\S]*)/i);
+      // Try to extract tone if it exists (**Funny**, **Emotional**, etc.)
+      const toneMatch = s.match(/\*\*(.*?)\*\*/);
+      let title = toneMatch ? toneMatch[1].trim() : null;
+
+      // Clean the story content from **tone** or markdown symbols
+      let cleanContent = s
+        .replace(/\*\*(.*?)\*\*/g, "") // remove **bold**
+        .replace(/\*/g, "") // remove stray *
+        .trim();
+
+      // If there’s no tone, use the first sentence or first few words as title
+      if (!title) {
+        const firstSentence = cleanContent.split(/[.!?]/)[0].trim();
+        title =
+          firstSentence.length > 50
+            ? firstSentence.split(" ").slice(0, 5).join(" ") + "..."
+            : firstSentence;
+      }
 
       return {
-        title: titleMatch ? titleMatch[1].trim() : `Story ${index}`,
-        content: contentMatch
-          ? contentMatch[1].trim()
-          : s.replace(/Story Title:.*/i, "").trim(),
+        title: title || `Story ${index + 1}`,
+        content: cleanContent,
         story_date: new Date(),
         draft_id: draft_id || null,
       };
     });
-
     for (const story of stories) {
       await db.query(
-        "INSERT INTO stories (title, content, story_date, draft_id) VALUES (?, ?, ?, ?)",
-        [story.title, story.content, story.story_date, story.draft_id]
+        "INSERT INTO stories (title, content, story_date, draft_id, user_id) VALUES (?, ?, ?, ?, ?)",
+        [story.title, story.content, story.story_date, story.draft_id, userId]
       );
     }
 
-    res.json({ stories });
+    res.json({ draft_id, stories });
   } catch (err) {
     console.error("Error generating stories:", err);
     res
@@ -125,11 +171,12 @@ exports.getStoriesByDraft = async (req, res) => {
 
 exports.getStoryById = async (req, res) => {
   const { id } = req.params;
+  const userId = req.user.id;
 
   try {
     const [rows] = await db.query(
-      "SELECT id, title, content, story_date FROM stories WHERE draft_id = ? ORDER BY id ASC",
-      [id]
+      "SELECT id, title, content, story_date FROM stories WHERE draft_id = ? AND user_id = ? ORDER BY id ASC",
+      [id, userId]
     );
 
     // rows will be an array of story objects
@@ -137,5 +184,38 @@ exports.getStoryById = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Error fetching stories" });
+  }
+};
+
+exports.getAllDrafts = async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const [rows] = await db.query(
+      `
+      SELECT 
+        draft_id,
+        MIN(story_date) AS date,
+        LEFT(GROUP_CONCAT(content SEPARATOR ' '), 150) AS preview
+      FROM stories
+      WHERE user_id = ?
+      GROUP BY draft_id
+      ORDER BY date DESC
+    `,
+      userId
+    );
+
+    const drafts = rows.map((row, i) => ({
+      id: row.draft_id,
+      title: `Draft #${i + 1}`,
+      date: new Date(row.date).toLocaleDateString(),
+      category: "AI Generated",
+      preview: row.preview + "...",
+    }));
+
+    res.json(drafts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch drafts" });
   }
 };

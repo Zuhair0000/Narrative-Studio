@@ -6,12 +6,19 @@ export default function StoriesPage() {
   const { id } = useParams();
   const [selectedStory, setSelectedStory] = useState(null);
   const [stories, setStories] = useState([]);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchStories = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3001/api/stories/story/${id}`
+          `http://localhost:3001/api/stories/story/${id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         const data = await res.json();
         setStories(Array.isArray(data) ? data : []);
@@ -20,38 +27,14 @@ export default function StoriesPage() {
       }
     };
     fetchStories();
-  }, [id]);
-
-  // const stories = [
-  //   {
-  //     id: 1,
-  //     title: "Story One",
-  //     content:
-  //       "This is the first story. It goes into more detail about your brand’s message and narrative direction. You can expand this with multiple paragraphs to simulate a real story.",
-  //     date: "October 9, 2025",
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Story Two",
-  //     content:
-  //       "This story explores a different approach to connecting with your audience. The content elaborates on how storytelling enhances brand identity.",
-  //     date: "October 8, 2025",
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "Story Three",
-  //     content:
-  //       "This is the third story example. It showcases your creative storytelling techniques and brand positioning.",
-  //     date: "October 7, 2025",
-  //   },
-  // ];
+  }, [id, token]);
 
   return (
     <>
       <Navbar showAuthButtons={false} />
       <div className="min-h-screen bg-[#1F2028] text-white flex flex-col items-center pt-16 px-6">
         <h1 className="text-4xl font-bold text-orange-500 mb-6">
-          Draft #{id} Stories
+          AI Generated Stories
         </h1>
 
         <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">

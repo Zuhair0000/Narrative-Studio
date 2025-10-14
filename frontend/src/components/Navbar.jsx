@@ -1,10 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "./Button";
 
 export default function Navbar({ showAuthButtons = true }) {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   return (
     <nav className="flex justify-between items-center bg-[#1F2028] px-10 py-6 text-white">
-      <Link to="/" className="text-lg font-semibold">
+      <Link to={token ? "/dashboard" : "/"} className="text-lg font-semibold">
         Narrative Studio
       </Link>
       {showAuthButtons && (
@@ -18,6 +26,7 @@ export default function Navbar({ showAuthButtons = true }) {
           <Button>Sign up</Button>
         </div>
       )}
+      {token ? <Button onSubmit={handleLogout}>Log out</Button> : ""}
     </nav>
   );
 }

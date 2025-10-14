@@ -12,6 +12,7 @@ export default function CreateStory() {
     coreValues: "",
   });
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,7 +24,10 @@ export default function CreateStory() {
     try {
       const res = await fetch("http://localhost:3001/api/stories/generate", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(formData),
       });
 
@@ -32,7 +36,7 @@ export default function CreateStory() {
 
       if (res.ok) {
         alert("Stories generated successfully!");
-        navigate(`/stories/${data.storyId}`);
+        navigate(`/stories/${data.draft_id}`);
       } else {
         alert(data.message || "Failed to generate stories");
       }
