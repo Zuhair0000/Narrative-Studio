@@ -17,7 +17,7 @@ export default function BuyCredits() {
           <PayPalScriptProvider
             options={{
               "client-id":
-                "AUPN9xHEpKHXGWPuz8OxyUy46EASmLT7OqSSMQe9nd1MTy0A2UJ7MPFjT3h0j4aJJUNqDQUKDvuGZvfO",
+                "AQXW6auqC1cskpf7C6Nm51mTzrfslzpom2AeahBiDENec1Dj1TI6gVcvjeJ7vGAXK0FDcLwK2NDaDmG5",
             }}
           >
             <PayPalButtons
