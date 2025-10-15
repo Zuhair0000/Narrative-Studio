@@ -44,6 +44,16 @@ exports.generateStories = async (req, res) => {
 
   try {
     const draft_id = Date.now();
+
+    const [[user]] = await db.query("SELECT credits FROM users WHERE id = ?", [
+      userId,
+    ]);
+    if (user.credits <= 0) {
+      return res
+        .status(403)
+        .json({ message: "No credits left.Please purchase more" });
+    }
+
     const completion = await groq.chat.completions.create({
       model: "openai/gpt-oss-20b",
       messages: [{ role: "user", content: prompt }],
@@ -80,6 +90,10 @@ exports.generateStories = async (req, res) => {
         draft_id: draft_id || null,
       };
     });
+
+    await db.query("UPDATE users SET credits = credits - 1 WHERE id = ?", [
+      userId,
+    ]);
     for (const story of stories) {
       await db.query(
         "INSERT INTO stories (title, content, story_date, draft_id, user_id) VALUES (?, ?, ?, ?, ?)",

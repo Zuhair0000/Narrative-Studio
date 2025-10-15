@@ -7,6 +7,8 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import StoriesPage from "./pages/StoriesPage";
 import CreateStory from "./pages/CreateStory";
+import BuyCredits from "./pages/BuyCredits";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 export default function App() {
   return (
@@ -18,6 +20,8 @@ export default function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/stories/:id" element={<StoriesPage />} />
         <Route path="/create-story" element={<CreateStory />} />
+        <Route path="/create-order" element={<BuyCredits />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
       </Routes>
     </>
   );

@@ -126,6 +126,12 @@ export default function CreateStory() {
               />
             </div>
             <Button onSubmit={handleSubmit}>Create Story</Button>
+            <a
+              href="/create-order"
+              className="inline-block underline text-blue-400 font-medium hover:text-blue-300 transition-all duration-200"
+            >
+              Purchase More Credits!
+            </a>
           </div>
         </form>
 
