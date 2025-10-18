@@ -171,7 +171,7 @@ npm run dev
 
 Zuhair Hassan
 📍 Software Engineer | Full Stack Developer
-🔗 GitHub | LinkedIn
+
 
 ⸻
 
