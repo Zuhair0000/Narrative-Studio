@@ -19,7 +19,7 @@ export default function Navbar({ showAuthButtons = true }) {
       if (!token) return;
 
       try {
-        const res = await fetch("http://localhost:3001/api/stories/credits", {
+        const res = await fetch("http://localhost:5432/api/stories/credits", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

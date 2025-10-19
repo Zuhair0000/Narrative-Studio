@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const handleLogin = async (formData) => {
     try {
-      const res = await fetch("http://localhost:3001/api/auth/login", {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

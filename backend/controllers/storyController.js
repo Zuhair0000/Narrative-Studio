@@ -1,6 +1,6 @@
 // const OpenAI = require("openai");
 const Groq = require("groq-sdk");
-const db = require("../db");
+const pool = require("../db");
 
 // const openai = new OpenAI({
 //   apiKey: process.env.OPENAI_API_KEY,
@@ -45,10 +45,13 @@ exports.generateStories = async (req, res) => {
   try {
     const draft_id = Date.now();
 
-    const [[user]] = await db.query("SELECT credits FROM users WHERE id = ?", [
-      userId,
-    ]);
-    if (user.credits <= 0) {
+    const userResult = await pool.query(
+      "SELECT credits FROM users WHERE id = $1",
+      [userId]
+    );
+
+    const user = userResult.rows[0];
+    if (!user || user.credits <= 0) {
       return res
         .status(403)
         .json({ message: "No credits left.Please purchase more" });
@@ -91,12 +94,12 @@ exports.generateStories = async (req, res) => {
       };
     });
 
-    await db.query("UPDATE users SET credits = credits - 1 WHERE id = ?", [
+    await pool.query("UPDATE users SET credits = credits - 1 WHERE id = $1", [
       userId,
     ]);
     for (const story of stories) {
-      await db.query(
-        "INSERT INTO stories (title, content, story_date, draft_id, user_id) VALUES (?, ?, ?, ?, ?)",
+      await pool.query(
+        "INSERT INTO stories (title, content, story_date, draft_id, user_id) VALUES ($1, $2, $3, $4, $5)",
         [story.title, story.content, story.story_date, story.draft_id, userId]
       );
     }
@@ -114,21 +117,35 @@ exports.getAllDrafts = async (req, res) => {
   const userId = req.user.id;
 
   try {
-    const [rows] = await db.query(
+    // const result = await pool.query(
+    //   `
+    //   SELECT
+    //     draft_id,
+    //     MIN(story_date) AS date,
+    //     LEFT(GROUP_CONCAT(content SEPARATOR ' '), 150) AS preview
+    //   FROM stories
+    //   WHERE user_id = $1
+    //   GROUP BY draft_id
+    //   ORDER BY date DESC
+    // `,
+    //   [userId]
+    // );
+
+    const result = await pool.query(
       `
-      SELECT 
-        draft_id,
-        MIN(story_date) AS date,
-        LEFT(GROUP_CONCAT(content SEPARATOR ' '), 150) AS preview
-      FROM stories
-      WHERE user_id = ?
-      GROUP BY draft_id
-      ORDER BY date DESC
-    `,
-      userId
+  SELECT 
+    draft_id,
+    MIN(story_date) AS date,
+    LEFT(STRING_AGG(content, ' '), 150) AS preview
+  FROM stories
+  WHERE user_id = $1
+  GROUP BY draft_id
+  ORDER BY date DESC
+  `,
+      [userId]
     );
 
-    const drafts = rows.map((row, i) => ({
+    const drafts = result.rows.map((row, i) => ({
       id: row.draft_id,
       title: `Draft #${i + 1}`,
       date: new Date(row.date).toLocaleDateString(),
@@ -148,13 +165,13 @@ exports.getStoryByDraftId = async (req, res) => {
   const userId = req.user.id;
 
   try {
-    const [rows] = await db.query(
-      "SELECT id, title, content, story_date FROM stories WHERE draft_id = ? AND user_id = ? ORDER BY id ASC",
+    const result = await pool.query(
+      "SELECT id, title, content, story_date FROM stories WHERE draft_id = $1 AND user_id = $2 ORDER BY id ASC",
       [draftId, userId]
     );
 
     // rows will be an array of story objects
-    res.json(rows);
+    res.json(result.rows);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Error fetching stories" });
@@ -165,15 +182,15 @@ exports.getUserCredits = async (req, res) => {
   const userId = req.user.id;
 
   try {
-    const [result] = await db.query("SELECT credits FROM users WHERE id = ?", [
+    const result = await pool.query("SELECT credits FROM users WHERE id = $1", [
       userId,
     ]);
 
-    if (result.length === 0) {
+    if (result.rows.length === 0) {
       return res.status(404).json({ credits: 0 });
     }
 
-    res.json({ credits: result[0].credits });
+    res.json({ credits: result.rows[0].credits });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch credits" });

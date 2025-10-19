@@ -1,4 +1,4 @@
-const db = require("../db");
+const pool = require("../db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -12,21 +12,21 @@ exports.signup = async (req, res) => {
   try {
     const hashed = await bcrypt.hash(password, 10);
 
-    const [exist] = await db.query("SELECT * FROM users where email = ?", [
+    const exist = await pool.query("SELECT * FROM users where email = $1", [
       email,
     ]);
-    if (exist.length > 0) {
+    if (exist.rows.length > 0) {
       return res.status(400).json({ message: "User already esits" });
     }
 
-    const [user] = await db.query(
-      "INSERT INTO users(name, email, password) VALUES (?, ?, ?)",
+    const user = await pool.query(
+      "INSERT INTO users(name, email, password) VALUES ($1, $2, $3)",
       [name, email, hashed]
     );
 
     res
       .status(201)
-      .json({ message: "Registered successfully", id: user.insertId });
+      .json({ message: "Registered successfully", id: user.rows[0].insertId });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error", error: err.message });
@@ -41,15 +41,15 @@ exports.login = async (req, res) => {
   }
 
   try {
-    const [users] = await db.query("SELECT * FROM users WHERE email = ?", [
+    const users = await pool.query("SELECT * FROM users WHERE email = $1", [
       email,
     ]);
 
-    if (users.length === 0) {
+    if (users.rows.length === 0) {
       return res.status(400).json({ message: "User does not exist" });
     }
 
-    const user = users[0];
+    const user = users.rows[0];
 
     const isMatched = await bcrypt.compare(password, user.password);
 

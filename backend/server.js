@@ -9,13 +9,18 @@ const paymentRoutes = require("./routes/paymentRoutes");
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_API_URL,
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 app.use("/api/auth", authRouter);
 app.use("/api/stories", storyRoutes);
 app.use("/api/payments", paymentRoutes);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.DB_PORT || 3001;
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

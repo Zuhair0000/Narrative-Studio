@@ -7,19 +7,17 @@ export default function StoriesPage() {
   const [selectedStory, setSelectedStory] = useState(null);
   const [stories, setStories] = useState([]);
   const token = localStorage.getItem("token");
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchStories = async () => {
       try {
-        const res = await fetch(
-          `http://localhost:3001/api/stories/story/${id}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const res = await fetch(`${API_URL}/api/stories/story/${id}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const data = await res.json();
         setStories(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -27,7 +25,7 @@ export default function StoriesPage() {
       }
     };
     fetchStories();
-  }, [id, token]);
+  }, [API_URL, id, token]);
 
   return (
     <>

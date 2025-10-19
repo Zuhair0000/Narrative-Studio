@@ -7,11 +7,12 @@ export default function Dashboard() {
   const [drafts, setDrafts] = useState([]);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchDrafts = async () => {
       try {
-        const res = await fetch("http://localhost:3001/api/stories/drafts", {
+        const res = await fetch(`${API_URL}/api/stories/drafts`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
@@ -24,7 +25,7 @@ export default function Dashboard() {
       }
     };
     fetchDrafts();
-  }, [token]);
+  }, [API_URL, token]);
 
   return (
     <>

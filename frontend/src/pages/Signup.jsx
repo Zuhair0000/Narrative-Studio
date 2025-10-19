@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleSignUp = async (formData, setFormData) => {
     try {
-      const res = await fetch("http://localhost:3001/api/auth/signup", {
+      const res = await fetch(`${API_URL}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

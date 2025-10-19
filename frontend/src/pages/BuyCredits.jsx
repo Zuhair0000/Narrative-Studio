@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 
 export default function BuyCredits() {
   const token = localStorage.getItem("token");
+  const API_URL = import.meta.env.VITE_API_URL;
 
   return (
     <>
@@ -24,7 +25,7 @@ export default function BuyCredits() {
               style={{ layout: "vertical" }}
               createOrder={async () => {
                 const res = await fetch(
-                  "http://localhost:3001/api/payments/create-order",
+                  `${API_URL}/api/payments/create-order`,
                   {
                     method: "POST",
                     headers: {
@@ -38,7 +39,7 @@ export default function BuyCredits() {
               }}
               onApprove={async (data) => {
                 const res = await fetch(
-                  "http://localhost:3001/api/payments/capture-order",
+                  `${API_URL}/api/payments/capture-order`,
                   {
                     method: "POST",
                     headers: {

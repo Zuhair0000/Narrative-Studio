@@ -13,6 +13,7 @@ export default function CreateStory() {
   });
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +23,7 @@ export default function CreateStory() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:3001/api/stories/generate", {
+      const res = await fetch(`${API_URL}/api/stories/generate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

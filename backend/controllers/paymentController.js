@@ -1,5 +1,5 @@
 const { client, paypal } = require("../utils/paypal");
-const db = require("../db");
+const pool = require("../db");
 
 exports.paypalPayment = async (req, res) => {
   const request = new paypal.orders.OrdersCreateRequest();
