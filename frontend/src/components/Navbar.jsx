@@ -8,6 +8,7 @@ export default function Navbar({ showAuthButtons = true }) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const [credits, setCredits] = useState(null);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -19,7 +20,7 @@ export default function Navbar({ showAuthButtons = true }) {
       if (!token) return;
 
       try {
-        const res = await fetch("http://localhost:5432/api/stories/credits", {
+        const res = await fetch(`${API_URL}/api/stories/credits`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
