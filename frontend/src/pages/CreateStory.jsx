@@ -14,6 +14,7 @@ export default function CreateStory() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const API_URL = import.meta.env.VITE_API_URL;
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,6 +23,7 @@ export default function CreateStory() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const res = await fetch(`${API_URL}/api/stories/generate`, {
         method: "POST",
@@ -43,6 +45,8 @@ export default function CreateStory() {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -126,7 +130,35 @@ export default function CreateStory() {
                 className="w-100 bg-gray-800 border border-gray-700 rounded-2xl p-2 text-s, focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
-            <Button onSubmit={handleSubmit}>Create Story</Button>
+            <Button onSubmit={handleSubmit}>
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <svg
+                    className="w-5 h-5 mr-2 animate-spin text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z"
+                    ></path>
+                  </svg>
+                  Creating…
+                </div>
+              ) : (
+                <>Create Story</>
+              )}
+            </Button>
             <a
               href="/create-order"
               className="inline-block underline text-blue-400 font-medium hover:text-blue-300 transition-all duration-200"
