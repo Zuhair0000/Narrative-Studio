@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "./Button";
 
-export default function AuthForm({ type, onSubmit }) {
+export default function AuthForm({ type, onSubmit, isLoading }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -66,7 +66,35 @@ export default function AuthForm({ type, onSubmit }) {
           </div>
           <div className="flex justify-center">
             <Button onSubmit={handleSubmit}>
-              {isSignUp ? "Sign Up" : "Log In"}
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <svg
+                    className="w-5 h-5 mr-2 animate-spin text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z"
+                    ></path>
+                  </svg>
+                  Processing…
+                </div>
+              ) : isSignUp ? (
+                "Sign Up"
+              ) : (
+                "Log In"
+              )}
             </Button>
           </div>
         </form>

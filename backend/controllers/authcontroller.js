@@ -26,7 +26,7 @@ exports.signup = async (req, res) => {
 
     res
       .status(201)
-      .json({ message: "Registered successfully", id: user.rows[0].insertId });
+      .json({ message: "Registered successfully", user: user.rows[0] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error", error: err.message });
