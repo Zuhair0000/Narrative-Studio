@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Button from "./Button";
+import { Link } from "react-router-dom";
 
 export default function AuthForm({ type, onSubmit, isLoading }) {
   const [formData, setFormData] = useState({
@@ -103,16 +104,16 @@ export default function AuthForm({ type, onSubmit, isLoading }) {
           {isSignUp ? (
             <>
               Already have an account?{" "}
-              <a href="/login" className="text-pink-400 hover:underline">
+              <Link to="/login" className="text-pink-400 hover:underline">
                 Log in
-              </a>
+              </Link>
             </>
           ) : (
             <>
               Don’t have an account?{" "}
-              <a href="/signup" className="text-pink-400 hover:underline">
+              <Link to="/signup" className="text-pink-400 hover:underline">
                 Sign up
-              </a>
+              </Link>
             </>
           )}
         </p>
