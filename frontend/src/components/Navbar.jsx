@@ -34,7 +34,7 @@ export default function Navbar({ showAuthButtons = true }) {
     fetchCredits();
     const interval = setInterval(fetchCredits, 30000);
     return () => clearInterval(interval);
-  }, [token]);
+  }, [API_URL, token]);
 
   return (
     <nav className="flex justify-between items-center bg-[#1F2028] px-10 py-6 text-white">
@@ -53,7 +53,7 @@ export default function Navbar({ showAuthButtons = true }) {
           >
             Login
           </Link>
-          <Button>Sign up</Button>
+          <Button onSubmit={() => navigate("/signup")}>Sign up</Button>
         </div>
       )}
       {token && (

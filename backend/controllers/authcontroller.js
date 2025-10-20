@@ -20,7 +20,7 @@ exports.signup = async (req, res) => {
     }
 
     const user = await pool.query(
-      "INSERT INTO users(name, email, password) VALUES ($1, $2, $3)",
+      "INSERT INTO users(name, email, password) VALUES ($1, $2, $3) RETURNING *",
       [name, email, hashed]
     );
 
