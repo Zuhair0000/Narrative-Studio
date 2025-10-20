@@ -20,7 +20,7 @@ export default function SignUp() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Sign up failed");
+        throw new Error(data.message || "Sign up failed");
       }
       setFormData({
         name: "",

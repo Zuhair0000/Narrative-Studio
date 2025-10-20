@@ -16,7 +16,7 @@ exports.signup = async (req, res) => {
       email,
     ]);
     if (exist.rows.length > 0) {
-      return res.status(400).json({ message: "User already esits" });
+      return res.status(409).json({ message: "User already esits" });
     }
 
     const user = await pool.query(
