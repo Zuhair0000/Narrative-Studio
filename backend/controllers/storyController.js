@@ -117,20 +117,6 @@ exports.getAllDrafts = async (req, res) => {
   const userId = req.user.id;
 
   try {
-    // const result = await pool.query(
-    //   `
-    //   SELECT
-    //     draft_id,
-    //     MIN(story_date) AS date,
-    //     LEFT(GROUP_CONCAT(content SEPARATOR ' '), 150) AS preview
-    //   FROM stories
-    //   WHERE user_id = $1
-    //   GROUP BY draft_id
-    //   ORDER BY date DESC
-    // `,
-    //   [userId]
-    // );
-
     const result = await pool.query(
       `
   SELECT 
